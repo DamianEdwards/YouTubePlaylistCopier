@@ -1,0 +1,77 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "YouTube Playlist Copier";
+}
+
+<h1>YouTube Playlist Copier</h1>
+
+<p>
+    This site will let you copy items from one YouTube playlist to another. You'll need to sign-in using a Google identity that has
+    permission to modify the destination playlist.
+</p>
+
+<form method="post" class="form-inline">
+    <p class="text-info">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <text>Signed in to Google as <strong>@User.Identity.Name</strong></text>
+            <button asp-controller="Account" asp-action="SignOut" type="submit" class="btn btn-sm btn-default">Sign out</button>
+        }
+        else
+        {
+            <button type="submit" asp-page-handler="Login" class="btn btn-success" formnovalidate>Sign in to Google</button>
+        }
+    </p>
+</form>
+
+<form method="post" id="copyForm">
+    <div class="form-group">
+        <label asp-for="Input.SourcePlaylistId"></label>
+        <div class="row">
+            <div class="col-sm-4">
+                <input asp-for="Input.SourcePlaylistId" class="form-control" disabled="@(!User.Identity.IsAuthenticated)" />
+            </div>
+        </div>
+        <span asp-validation-for="Input.SourcePlaylistId" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Input.DestinationPlaylistId"></label>
+        <div class="row">
+            <div class="col-sm-4">
+                <input asp-for="Input.DestinationPlaylistId" class="form-control" disabled="@(!User.Identity.IsAuthenticated)" />
+            </div>
+        </div>
+        <span asp-validation-for="Input.DestinationPlaylistId" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <p class="help-block">
+            NOTE: Large playlists may take a while to copy. Please wait after clicking 'Copy'.
+        </p>
+        <button type="submit" class="btn btn-primary" id="copyButton" disabled="@(!User.Identity.IsAuthenticated)">Copy</button>
+    </div>
+    <div class="form-group">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (Model.ShowMessage)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>   </button>
+                @Model.Message
+            </div>
+        }
+    </div>
+</form>
+
+@section Scripts {
+    @Html.Partial("_ValidationScriptsPartial");
+    <script>
+        (function () {
+            $('#copyForm').submit(function () {
+                if ($(this).validate().form()) {
+                    console.log('blah');
+                    $('#copyButton')[0].disabled = true;
+                }
+            })
+        })();
+    </script>
+}
