@@ -50,7 +50,7 @@ namespace YouTubePlaylistCopier.Pages
                 using (var client = new YouTubeService(new BaseClientService.Initializer
                 {
                     HttpClientInitializer = credential,
-                    ApplicationName = "live.asp.net"
+                    ApplicationName = "YouTube Playlist Copier"
                 }))
                 {
                     var count = await CopyItems(client);
